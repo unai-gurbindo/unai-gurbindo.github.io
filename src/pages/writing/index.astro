@@ -77,10 +77,12 @@ const enrichedPosts = sortedPosts.map((post) => {
   };
 });
 
-const postsBySection = writingSections.map((section) => ({
-  ...section,
-  posts: enrichedPosts.filter((item) => item.sectionKey === section.key),
-}));
+const postsBySection = writingSections
+  .map((section) => ({
+    ...section,
+    posts: enrichedPosts.filter((item) => item.sectionKey === section.key),
+  }))
+  .filter((section) => section.posts.length > 0);
 ---
 
 <BaseLayout
@@ -92,7 +94,7 @@ const postsBySection = writingSections.map((section) => ({
       <p class="eyebrow">Writing</p>
       <h1>Essays and research notes</h1>
       <p class="text-measure">
-        Notes, essays and presentation material on uncertainty quantification, domain uncertainty,
+        Notes and essays on uncertainty quantification, domain uncertainty,
         generative models and responsible AI. Use the filters to browse by topic.
       </p>
     </header>
