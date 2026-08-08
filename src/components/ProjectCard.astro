@@ -1,0 +1,58 @@
+---
+interface Project {
+  title: string;
+  description: string;
+  tags?: string[];
+  link?: string;
+  linkLabel?: string;
+}
+
+const { project } = Astro.props as { project: Project };
+---
+
+<article class="project-row">
+  <h3>{project.title}</h3>
+  <p class="project-description text-measure">{project.description}</p>
+  {project.tags && project.tags.length > 0 && (
+    <p class="project-tags"><span>Methods:</span> {project.tags.join(" · ")}</p>
+  )}
+  {project.link && (
+    <a class="text-link" href={project.link}>{project.linkLabel ?? "Project"}</a>
+  )}
+</article>
+
+<style>
+  .project-row {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-row h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 12.65px;
+    line-height: 1.38;
+    font-weight: 700;
+  }
+
+  .project-row p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.48;
+  }
+
+  .project-row .project-tags {
+    color: var(--muted-light);
+  }
+
+  .project-row .project-tags span {
+    color: var(--muted);
+    font-weight: 650;
+  }
+
+  .project-row .text-link {
+    display: inline-block;
+    margin-top: 4px;
+  }
+</style>

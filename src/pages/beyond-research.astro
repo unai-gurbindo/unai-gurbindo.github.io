@@ -1,0 +1,467 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const journalEntries = [
+  {
+    date: "1 May 2026",
+    title: "ICML acceptance notification",
+    description:
+      "The day I received the acceptance notification for the ICML 2026 position paper. A quiet but meaningful milestone in a research path shaped by uncertainty, persistence and many small technical doubts slowly becoming clearer.",
+    images: Array.from({ length: 10 }, (_, index) => ({
+      src: `https://picsum.photos/seed/icml-acceptance-${index + 1}/680/510`,
+      alt: `Placeholder photograph ${index + 1} for the ICML acceptance diary entry`,
+    })),
+  },
+  {
+    date: "July 2025",
+    title: "Presenting the IJCNN paper in Rome",
+    description:
+      "A few fragments from Rome, where I presented my IJCNN paper in person. It was one of those moments where the technical work, the travel, the conversations and the sense of becoming part of a research community came together.",
+    images: Array.from({ length: 10 }, (_, index) => ({
+      src: `https://picsum.photos/seed/rome-ijcnn-${index + 1}/680/510`,
+      alt: `Placeholder photograph ${index + 1} for the Rome IJCNN diary entry`,
+    })),
+  },
+];
+
+const lightboxImages = journalEntries.flatMap((entry) =>
+  entry.images.map((image) => ({
+    ...image,
+    entryTitle: entry.title,
+    date: entry.date,
+  })),
+);
+---
+
+<BaseLayout
+  title="Beyond Research — Unai Gurbindo Gonzalez"
+  description="A personal visual diary of meaningful moments during Unai Gurbindo Gonzalez's early research career."
+>
+  <main class="beyond-page container-page">
+    <header class="beyond-header">
+      <div class="beyond-header-copy">
+        <p class="eyebrow">Beyond research</p>
+        <p>
+          Alongside my academic work, I have become increasingly interested in keeping a <strong>personal diary</strong> of moments that have felt meaningful during my still short path as a researcher. Through an old Zenir camera that has been in my family for around 35 years, I have started collecting fragments of conferences, travels, cities, conversations and quiet pauses that are part of research life but rarely appear in papers, CVs or formal academic profiles.
+        </p>
+        <p>
+          This page is not intended as a portfolio or a polished photography project. It is a modest archive of personal memories: some connected to research milestones, others to the places and people around them. The most recent entries appear first.
+        </p>
+      </div>
+
+      <figure class="header-photo">
+        <img
+          src="/images/beyond-research/analog-photo-01.jpg"
+          alt="Analog-style photograph from Unai's beyond research section"
+          loading="eager"
+        />
+      </figure>
+    </header>
+
+    <section class="journal-list" aria-label="Personal diary entries">
+      {journalEntries.map((entry) => (
+        <article class="journal-entry">
+          <div class="journal-date">{entry.date}</div>
+          <div class="journal-content">
+            <h2>{entry.title}</h2>
+            <p>{entry.description}</p>
+
+            <div class="photo-strip" aria-label={`${entry.title} image carousel`}>
+              {entry.images.map((image) => {
+                const globalIndex = lightboxImages.findIndex((item) => item.src === image.src);
+                return (
+                  <button
+                    class="photo-item"
+                    type="button"
+                    data-lightbox-index={globalIndex}
+                    aria-label={`Open photograph ${globalIndex + 1} from ${entry.title}`}
+                  >
+                    <img src={image.src} alt={image.alt} loading="lazy" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+  </main>
+
+  <div class="lightbox" data-lightbox aria-hidden="true">
+    <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close image viewer">×</button>
+    <button class="lightbox-arrow lightbox-arrow-prev" type="button" data-lightbox-prev aria-label="Previous image">‹</button>
+    <figure class="lightbox-figure">
+      <img src="" alt="" data-lightbox-image />
+      <figcaption>
+        <span data-lightbox-title></span>
+        <span data-lightbox-counter></span>
+      </figcaption>
+    </figure>
+    <button class="lightbox-arrow lightbox-arrow-next" type="button" data-lightbox-next aria-label="Next image">›</button>
+  </div>
+
+  <script define:vars={{ lightboxImages }}>
+    const lightbox = document.querySelector("[data-lightbox]");
+    const imageEl = document.querySelector("[data-lightbox-image]");
+    const titleEl = document.querySelector("[data-lightbox-title]");
+    const counterEl = document.querySelector("[data-lightbox-counter]");
+    const closeButton = document.querySelector("[data-lightbox-close]");
+    const prevButton = document.querySelector("[data-lightbox-prev]");
+    const nextButton = document.querySelector("[data-lightbox-next]");
+    const triggers = Array.from(document.querySelectorAll("[data-lightbox-index]"));
+
+    let activeIndex = 0;
+
+    function updateLightbox(index) {
+      if (!lightboxImages.length) return;
+
+      activeIndex = Math.max(0, Math.min(index, lightboxImages.length - 1));
+      const activeImage = lightboxImages[activeIndex];
+
+      imageEl.src = activeImage.src;
+      imageEl.alt = activeImage.alt;
+      titleEl.textContent = `${activeImage.entryTitle} · ${activeImage.date}`;
+      counterEl.textContent = `${activeIndex + 1} / ${lightboxImages.length}`;
+
+      prevButton.disabled = activeIndex === 0;
+      nextButton.disabled = activeIndex === lightboxImages.length - 1;
+    }
+
+    function openLightbox(index) {
+      updateLightbox(index);
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.documentElement.classList.add("lightbox-lock");
+      closeButton.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.documentElement.classList.remove("lightbox-lock");
+      imageEl.removeAttribute("src");
+    }
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        openLightbox(Number(trigger.dataset.lightboxIndex || 0));
+      });
+    });
+
+    closeButton.addEventListener("click", closeLightbox);
+
+    prevButton.addEventListener("click", () => {
+      if (activeIndex > 0) updateLightbox(activeIndex - 1);
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (activeIndex < lightboxImages.length - 1) updateLightbox(activeIndex + 1);
+    });
+
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (!lightbox.classList.contains("is-open")) return;
+
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft" && activeIndex > 0) updateLightbox(activeIndex - 1);
+      if (event.key === "ArrowRight" && activeIndex < lightboxImages.length - 1) updateLightbox(activeIndex + 1);
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .beyond-page {
+    padding: 34px 0 42px;
+  }
+
+  .beyond-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 38px;
+    align-items: start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .beyond-header-copy {
+    max-width: 820px;
+  }
+
+  .beyond-header p:not(.eyebrow) {
+    margin: 9px 0 0;
+    color: var(--muted);
+    font-size: 12.9px;
+    line-height: 1.62;
+  }
+
+  .beyond-header strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .header-photo {
+    margin: 0;
+  }
+
+  .header-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    filter: saturate(0.9) contrast(0.98);
+  }
+
+  .journal-list {
+    margin-top: 10px;
+  }
+
+  .journal-entry {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 26px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .journal-date {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.45;
+  }
+
+  .journal-content h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: -0.006em;
+  }
+
+  .journal-content > p {
+    max-width: 760px;
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 12.8px;
+    line-height: 1.6;
+  }
+
+  .photo-strip {
+    display: flex;
+    gap: 10px;
+    margin-top: 13px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    padding-bottom: 8px;
+  }
+
+  .photo-strip::-webkit-scrollbar {
+    height: 7px;
+  }
+
+  .photo-strip::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+  }
+
+  .photo-strip::-webkit-scrollbar-track {
+    background: var(--surface-muted);
+  }
+
+  .photo-item {
+    flex: 0 0 auto;
+    width: 225px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+    scroll-snap-align: start;
+  }
+
+  .photo-item img {
+    width: 225px;
+    height: 169px;
+    display: block;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    filter: saturate(0.92) contrast(0.98);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+
+  .photo-item:hover img,
+  .photo-item:focus-visible img {
+    opacity: 0.86;
+    transform: translateY(-1px);
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    grid-template-columns: minmax(56px, 0.12fr) minmax(0, 1fr) minmax(56px, 0.12fr);
+    align-items: center;
+    gap: 16px;
+    padding: 30px;
+    background: rgba(10, 16, 24, 0.88);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+
+  .lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  :global(html.lightbox-lock),
+  :global(html.lightbox-lock body) {
+    overflow: hidden;
+  }
+
+  .lightbox-figure {
+    grid-column: 2;
+    margin: 0 auto;
+    width: min(1120px, 100%);
+  }
+
+  .lightbox-figure img {
+    width: 100%;
+    max-height: 82vh;
+    display: block;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  }
+
+  .lightbox-figure figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .lightbox-close,
+  .lightbox-arrow {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    backdrop-filter: blur(12px);
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, opacity 160ms ease;
+  }
+
+  .lightbox-close:hover,
+  .lightbox-arrow:hover:not(:disabled),
+  .lightbox-close:focus-visible,
+  .lightbox-arrow:focus-visible:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.46);
+    transform: translateY(-1px);
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: 22px;
+    right: 24px;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox-arrow {
+    width: 48px;
+    height: 64px;
+    justify-self: center;
+    border-radius: 999px;
+    font-size: 40px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox-arrow:disabled {
+    opacity: 0.28;
+    cursor: default;
+  }
+
+  .lightbox-arrow-prev {
+    grid-column: 1;
+  }
+
+  .lightbox-arrow-next {
+    grid-column: 3;
+  }
+
+  @media (max-width: 760px) {
+    .beyond-header {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .header-photo {
+      max-width: 360px;
+    }
+
+    .header-photo img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .beyond-page {
+      padding: 28px 0 36px;
+    }
+
+    .journal-entry {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 18px 0;
+    }
+
+    .photo-item,
+    .photo-item img {
+      width: 200px;
+    }
+
+    .photo-item img {
+      height: 150px;
+    }
+
+    .lightbox {
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      gap: 8px;
+      padding: 18px 10px;
+    }
+
+    .lightbox-arrow {
+      width: 38px;
+      height: 52px;
+      font-size: 32px;
+    }
+
+    .lightbox-close {
+      top: 14px;
+      right: 14px;
+    }
+
+    .lightbox-figure figcaption {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+</style>

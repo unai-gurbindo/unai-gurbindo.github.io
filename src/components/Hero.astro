@@ -1,0 +1,95 @@
+<section class="profile-hero container-page" aria-labelledby="profile-hero-title">
+  <div class="profile-hero-block">
+    <h1 id="profile-hero-title">Unai Gurbindo Gonzalez</h1>
+
+    <p class="profile-role">
+      PhD Researcher in Trustworthy AI<br />
+      Barcelona Supercomputing Center &amp; Universitat Politècnica de Catalunya
+    </p>
+
+    <p class="profile-tagline">
+      Building trustworthy AI systems by understanding uncertainty.
+    </p>
+
+    <p class="profile-summary text-measure">
+      I study uncertainty quantification, domain uncertainty and robustness under distribution shift,
+      with a focus on how uncertainty should inform responsible AI deployment.
+    </p>
+
+    <nav class="profile-links" aria-label="Profile links">
+      <a href="mailto:unai.gurbindo@gmail.com">Email</a>
+      <a href="https://scholar.google.com/citations?hl=es&amp;user=3Cz7GXcAAAAJ">Google Scholar</a>
+      <a href="https://github.com/unai-gurbindo">GitHub</a>
+      <a href="https://orcid.org/0000-0002-4091-5809">ORCID</a>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .profile-hero {
+    padding: 30px 0 31px;
+  }
+
+  .profile-hero-block {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .profile-hero h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(1.62rem, 2.1vw, 2rem);
+    line-height: 1.1;
+    letter-spacing: -0.022em;
+    font-weight: 700;
+  }
+
+  .profile-role {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 12.2px;
+    line-height: 1.46;
+  }
+
+  .profile-tagline {
+    margin: 15px 0 0;
+    max-width: 700px;
+    margin-inline: auto;
+    color: var(--navy);
+    font-size: 0.98rem;
+    line-height: 1.42;
+    font-weight: 640;
+    letter-spacing: -0.006em;
+  }
+
+  .profile-summary {
+    margin: 8px auto 0;
+    color: var(--muted);
+    font-size: 12.7px;
+    line-height: 1.62;
+  }
+
+  .profile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 13px;
+    justify-content: center;
+    margin-top: 14px;
+  }
+
+  .profile-links a {
+    color: var(--navy);
+    font-size: 12.2px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba(11, 47, 73, 0.24);
+    text-underline-offset: 4px;
+  }
+
+  .profile-links a:hover { text-decoration-color: var(--navy); }
+
+  @media (max-width: 620px) {
+    .profile-hero { padding: 26px 0 27px; }
+  }
+</style>

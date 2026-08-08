@@ -1,0 +1,84 @@
+---
+interface Link {
+  label: string;
+  href: string;
+}
+
+interface Publication {
+  year: string;
+  title: string;
+  venue: string;
+  authors: string;
+  note?: string;
+  links?: Link[];
+}
+
+const { publication } = Astro.props as { publication: Publication };
+---
+
+<article class="publication-row">
+  <div class="publication-year">{publication.year}</div>
+  <div class="publication-main">
+    <p class="publication-citation">
+      <span class="publication-authors">{publication.authors}</span>
+      <span> “{publication.title}.” </span>
+      <span class="publication-venue">{publication.venue}</span>
+      {publication.note && <span class="publication-note"> {publication.note}</span>}
+      {publication.links && publication.links.length > 0 && (
+        <span class="publication-links">
+          {publication.links.map((link) => <a href={link.href}>{link.label}</a>)}
+        </span>
+      )}
+    </p>
+  </div>
+</article>
+
+<style>
+  .publication-row {
+    display: grid;
+    grid-template-columns: 62px minmax(0, 1fr);
+    gap: 14px;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .publication-year {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .publication-citation {
+    margin: 0;
+    max-width: 980px;
+    color: var(--text);
+    font-size: 12.7px;
+    line-height: 1.55;
+  }
+
+  .publication-authors { color: var(--text); }
+  .publication-venue,
+  .publication-note { color: var(--muted); }
+
+  .publication-links {
+    display: inline-flex;
+    gap: 10px;
+    margin-left: 0.3rem;
+  }
+
+  .publication-links a {
+    color: var(--navy);
+    font-size: 12.2px;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(11, 47, 73, 0.25);
+  }
+
+  @media (max-width: 620px) {
+    .publication-row {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>

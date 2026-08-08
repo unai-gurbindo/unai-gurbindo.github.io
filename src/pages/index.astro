@@ -1,0 +1,229 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import AboutJourney from "../components/AboutJourney.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import PublicationCard from "../components/PublicationCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+import { publications } from "../data/publications";
+import { projects } from "../data/projects";
+
+const researchLines = [
+  {
+    title: "Uncertainty under distribution shift",
+    description:
+      "I study how uncertainty estimates behave when deployment inputs differ from training and evaluation data, including corrupted data, out-of-distribution examples and shifted deployment conditions.",
+  },
+  {
+    title: "Domain uncertainty",
+    description:
+      "A central part of my work is the idea that trustworthy AI should reason not only about labels, but also about whether an input belongs to the deployment domain in which predictions are meaningful.",
+  },
+  {
+    title: "Limits of predictive uncertainty",
+    description:
+      "My research analyses cases where predictive uncertainty collapses distinct sources of uncertainty, making it difficult to distinguish uncertain in-domain examples from unsupported deployment inputs.",
+  },
+  {
+    title: "Responsible AI documentation",
+    description:
+      "I also study how uncertainty-aware evaluation can inform documentation, deployment accountability, impact assessment and decisions about when model use should be limited or deferred.",
+  },
+];
+
+const acceptedPublications = publications.filter((publication) => publication.statusGroup === "accepted");
+const submittedPublications = publications.filter((publication) => publication.statusGroup === "submitted");
+---
+
+<BaseLayout
+  title="Unai Gurbindo Gonzalez — Trustworthy AI and Uncertainty Quantification"
+  description="Academic profile of Unai Gurbindo Gonzalez, PhD researcher in trustworthy AI, uncertainty quantification and robustness under distribution shift."
+>
+  <Hero />
+  <AboutJourney />
+
+  <section id="research" class="section research-section">
+    <div class="container-page">
+      <SectionHeader
+        title="Research"
+        description="My work focuses on uncertainty quantification, domain uncertainty and responsible AI under distribution shift."
+      />
+
+      <div class="research-combined-grid">
+        <div class="research-column">
+          <h3>Research interests</h3>
+          <div class="research-list">
+            {researchLines.map((line) => (
+              <article class="research-line text-measure">
+                <p><strong>{line.title}</strong> — {line.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div class="research-column selected-projects">
+          <h3>Selected technical work</h3>
+          <div class="project-list">
+            {projects.map((project) => <ProjectCard project={project} />)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" class="section publications-section">
+    <div class="container-page">
+      <SectionHeader
+        title="Selected publications"
+        description="Conference papers, position papers and interdisciplinary work across trustworthy AI, robust computer vision and biomedical data analysis."
+      />
+
+      <div class="publication-group">
+        <h3>Accepted / Published</h3>
+        {acceptedPublications.map((publication) => <PublicationCard publication={publication} />)}
+      </div>
+
+      <div class="publication-group">
+        <h3>Submitted / Under Review</h3>
+        {submittedPublications.map((publication) => <PublicationCard publication={publication} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section final-links-section">
+    <div class="container-page">
+      <div class="final-links-grid">
+        <a href="/writing" class="final-link-card">
+          <p class="eyebrow">Writing</p>
+          <h2>Essays and research notes</h2>
+          <p>Essays and research notes on AI ethics, uncertainty and generative models.</p>
+        </a>
+
+        <a href="/beyond-research" class="final-link-card">
+          <p class="eyebrow">Beyond research</p>
+          <h2>Photography and life outside the lab</h2>
+          <p>Photography and life outside the lab.</p>
+        </a>
+
+        <div class="final-link-card contact-card">
+          <p class="eyebrow">Contact</p>
+          <h2>Get in touch</h2>
+          <p>For research, collaboration or academic enquiries.</p>
+          <div class="contact-links">
+            <a href="mailto:unai.gurbindo@gmail.com">Email</a>
+            <a href="https://github.com/unai-gurbindo">GitHub</a>
+            <a href="https://scholar.google.com/citations?hl=es&user=3Cz7GXcAAAAJ">Google Scholar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .research-combined-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: 34px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .research-combined-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .research-column > h3 {
+    margin: 0 0 5px;
+    color: var(--text);
+    font-size: 12.8px;
+    font-weight: 700;
+  }
+
+  .research-list,
+  .project-list {
+    border-top: 1px solid var(--border);
+  }
+
+  .research-line {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .research-line p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12.35px;
+    line-height: 1.48;
+  }
+
+  .research-line strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .publication-group + .publication-group { margin-top: 18px; }
+
+  .publication-group > h3 {
+    margin: 0 0 3px;
+    color: var(--text);
+    font-size: 12.9px;
+    font-weight: 700;
+  }
+
+  .final-links-section { padding-bottom: 30px; }
+
+  .final-links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .final-link-card {
+    display: block;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-strong);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .final-link-card:hover { text-decoration: none; }
+
+  .final-link-card h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 12.8px;
+    line-height: 1.38;
+    font-weight: 700;
+  }
+
+  .final-link-card p:not(.eyebrow) {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12.1px;
+    line-height: 1.52;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 11px;
+    margin-top: 9px;
+  }
+
+  .contact-links a {
+    color: var(--navy);
+    font-size: 12.1px;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(11, 47, 73, 0.25);
+  }
+
+  @media (max-width: 760px) {
+    .final-links-grid { grid-template-columns: 1fr; }
+  }
+</style>

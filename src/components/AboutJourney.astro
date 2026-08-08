@@ -1,0 +1,124 @@
+---
+import SectionHeader from "./SectionHeader.astro";
+import AcademicTrajectory from "./AcademicTrajectory.astro";
+---
+
+<section id="about" class="section about-section">
+  <div class="container-page">
+    <SectionHeader title="About" />
+
+    <div class="about-grid">
+      <div class="about-main">
+        <div class="prose-compact text-measure">
+          <p>
+            I am a PhD researcher in Artificial Intelligence at the Barcelona Supercomputing Center and UPC. My work focuses on <strong>uncertainty quantification</strong>, <strong>robustness under distribution shift</strong> and <strong>trustworthy AI</strong>.
+          </p>
+          <p>
+            I am particularly interested in <strong>domain uncertainty</strong>: how AI systems should recognise when inputs fall outside the assumptions of their training or deployment domain, and how this should inform evaluation and deployment decisions.
+          </p>
+          <p>
+            My broader research connects technical uncertainty estimation with <strong>responsible AI documentation</strong>, <strong>deployment accountability</strong> and decisions about when model use should be trusted, limited or deferred.
+          </p>
+          <p>
+            This agenda combines empirical robustness evaluation with questions of documentation and use: not only whether uncertainty can be measured, but how it should shape deployment boundaries, communication and accountability.
+          </p>
+        </div>
+      </div>
+
+      <aside class="at-glance" aria-label="At a glance">
+        <p class="eyebrow">At a glance</p>
+        <dl>
+          <div>
+            <dt>Current role</dt>
+            <dd>PhD Researcher in Trustworthy AI</dd>
+          </div>
+          <div>
+            <dt>Affiliation</dt>
+            <dd>Barcelona Supercomputing Center &amp; UPC</dd>
+          </div>
+          <div>
+            <dt>Research engineering</dt>
+            <dd>Python · R · Bash · SQL · C · MATLAB · Git · Docker</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <AcademicTrajectory />
+  </div>
+</section>
+
+<style>
+  .about-section { padding-top: 32px; }
+
+  .about-grid {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 1.15rem;
+  }
+
+  @media (min-width: 860px) {
+    .about-grid {
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  .about-main .text-measure {
+    max-width: none;
+  }
+
+
+  .prose-compact {
+    color: var(--muted);
+    font-size: 12.95px;
+    line-height: 1.6;
+  }
+
+  .prose-compact p { margin: 0; }
+  .prose-compact p + p { margin-top: 0.54rem; }
+
+  .prose-compact strong {
+    color: var(--text);
+    font-weight: 670;
+  }
+
+  .at-glance {
+    border-left: 1px solid var(--border);
+    padding-left: 1rem;
+  }
+
+  .at-glance dl { margin: 0.55rem 0 0; }
+
+  .at-glance div {
+    padding: 0.36rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .at-glance dt {
+    margin-bottom: 0.06rem;
+    color: var(--muted);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.052em;
+    text-transform: uppercase;
+  }
+
+  .at-glance dd {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.74rem;
+    line-height: 1.46;
+  }
+
+  @media (max-width: 859px) {
+    .at-glance {
+      border-left: 0;
+      padding-left: 0;
+      border-top: 1px solid var(--border);
+      padding-top: 0.9rem;
+    }
+  }
+</style>

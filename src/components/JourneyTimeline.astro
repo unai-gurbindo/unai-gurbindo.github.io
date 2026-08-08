@@ -1,0 +1,318 @@
+---
+import { journeyItems } from "../data/journey";
+
+const categoryStyles = {
+  Education: {
+    color: "#0F3D5E",
+    background: "rgba(15, 61, 94, 0.10)",
+    label: "Education",
+  },
+  Research: {
+    color: "#2A9D8F",
+    background: "rgba(42, 157, 143, 0.12)",
+    label: "Research",
+  },
+  Award: {
+    color: "#8E7CC3",
+    background: "rgba(142, 124, 195, 0.14)",
+    label: "Award",
+  },
+  "Selected Output": {
+    color: "#B7791F",
+    background: "rgba(183, 121, 31, 0.13)",
+    label: "Selected Output",
+  },
+  Teaching: {
+    color: "#5B6472",
+    background: "rgba(91, 100, 114, 0.12)",
+    label: "Teaching",
+  },
+};
+
+const categoryOrder = [
+  "All",
+  "Education",
+  "Research",
+  "Award",
+  "Selected Output",
+  "Teaching",
+];
+
+const categories = categoryOrder.filter((category) => {
+  if (category === "All") return true;
+  return journeyItems.some((item) => item.category === category);
+});
+
+const initialItem = journeyItems[journeyItems.length - 1];
+const initialStyle =
+  categoryStyles[initialItem.category as keyof typeof categoryStyles];
+---
+
+<section
+  class="mt-12 rounded-[2.25rem] border border-[var(--border)] bg-white/45 p-5 shadow-sm shadow-slate-900/5 md:p-7"
+  data-journey-root
+>
+  <div class="mb-7 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--blue)]">
+        Academic journey
+      </p>
+      <h3 class="mt-3 text-3xl font-semibold tracking-tight text-[var(--text)] md:text-4xl">
+        A trajectory across data science, robust AI and trustworthy deployment
+      </h3>
+    </div>
+
+    <p class="max-w-sm text-sm leading-6 text-[var(--muted)]">
+      Filter by category or click a milestone to inspect the details.
+    </p>
+  </div>
+
+  <div class="mb-7 flex flex-wrap gap-2">
+    {
+      categories.map((category) => (
+        <button
+          type="button"
+          data-filter={category}
+          class:list={[
+            "journey-filter rounded-full border px-4 py-2 text-sm font-semibold transition",
+            category === "All"
+              ? "border-[var(--blue)] bg-[var(--blue)] text-white"
+              : "border-[var(--border)] bg-white/65 text-[var(--muted)] hover:border-[var(--blue)] hover:text-[var(--blue)]",
+          ]}
+        >
+          {category}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="relative">
+    <div class="pointer-events-none absolute left-0 right-0 top-[2.15rem] hidden h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent md:block"></div>
+
+    <div class="-mx-4 overflow-x-auto px-4 pb-5">
+      <div class="flex min-w-max gap-4">
+        {
+          journeyItems.map((item) => {
+            const style =
+              categoryStyles[item.category as keyof typeof categoryStyles];
+
+            return (
+              <button
+                type="button"
+                data-journey-card
+                data-category={item.category}
+                data-title={item.title}
+                data-period={item.period}
+                data-institution={item.institution}
+                data-location={item.location}
+                data-description={item.description}
+                data-highlights={JSON.stringify(item.highlights)}
+                style={`--journey-color: ${style.color}; --journey-bg: ${style.background};`}
+                class="group relative w-[260px] shrink-0 rounded-3xl border border-[var(--border)] bg-white/70 p-5 text-left transition hover:-translate-y-1 hover:border-[var(--journey-color)] hover:shadow-xl hover:shadow-slate-900/10"
+              >
+                <div class="mb-4 flex items-center gap-3">
+                  <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-[var(--journey-color)] shadow-md shadow-slate-900/15">
+                    <span class="h-2.5 w-2.5 rounded-full bg-white"></span>
+                  </span>
+
+                  <span
+                    class="rounded-full px-3 py-1 text-xs font-semibold"
+                    style={`background: ${style.background}; color: ${style.color};`}
+                  >
+                    {style.label}
+                  </span>
+                </div>
+
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                  {item.period}
+                </p>
+
+                <h4 class="mt-3 text-lg font-semibold leading-snug text-[var(--text)]">
+                  {item.title}
+                </h4>
+
+                <p class="mt-2 text-sm font-medium leading-5 text-[var(--blue)]">
+                  {item.institution}
+                </p>
+
+                <p class="mt-3 text-sm leading-6 text-[var(--muted)]">
+                  {item.shortDescription}
+                </p>
+              </button>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mt-7 rounded-[2rem] border bg-white/80 p-7 shadow-sm shadow-slate-900/5 md:p-8"
+    style={`border-color: ${initialStyle.color};`}
+    data-journey-panel
+  >
+    <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+      <div>
+        <p
+          class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+          style={`background: ${initialStyle.background}; color: ${initialStyle.color};`}
+          data-panel-category
+        >
+          {initialItem.category}
+        </p>
+
+        <h3 class="mt-4 text-3xl font-semibold tracking-tight text-[var(--text)]">
+          <span data-panel-title>{initialItem.title}</span>
+        </h3>
+
+        <p class="mt-2 text-sm font-semibold text-[var(--blue)]">
+          <span data-panel-institution>{initialItem.institution}</span>
+        </p>
+      </div>
+
+      <div class="text-left md:text-right">
+        <p class="text-sm font-semibold text-[var(--text)]" data-panel-period>
+          {initialItem.period}
+        </p>
+        <p class="mt-1 text-sm text-[var(--muted)]" data-panel-location>
+          {initialItem.location}
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-6 max-w-4xl text-lg leading-8 text-[var(--muted)]" data-panel-description>
+      {initialItem.description}
+    </p>
+
+    <div class="mt-6 grid gap-3 md:grid-cols-3" data-panel-highlights>
+      {
+        initialItem.highlights.map((highlight) => (
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm font-medium leading-6 text-[var(--muted)]">
+            {highlight}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector("[data-journey-root]");
+
+  if (root) {
+    const cards = Array.from(root.querySelectorAll("[data-journey-card]"));
+    const filters = Array.from(root.querySelectorAll("[data-filter]"));
+
+    const panel = root.querySelector("[data-journey-panel]");
+    const panelCategory = root.querySelector("[data-panel-category]");
+    const panelTitle = root.querySelector("[data-panel-title]");
+    const panelInstitution = root.querySelector("[data-panel-institution]");
+    const panelPeriod = root.querySelector("[data-panel-period]");
+    const panelLocation = root.querySelector("[data-panel-location]");
+    const panelDescription = root.querySelector("[data-panel-description]");
+    const panelHighlights = root.querySelector("[data-panel-highlights]");
+
+    const styles = {
+      Education: {
+        color: "#0F3D5E",
+        background: "rgba(15, 61, 94, 0.10)",
+      },
+      Research: {
+        color: "#2A9D8F",
+        background: "rgba(42, 157, 143, 0.12)",
+      },
+      Award: {
+        color: "#8E7CC3",
+        background: "rgba(142, 124, 195, 0.14)",
+      },
+      "Selected Output": {
+        color: "#B7791F",
+        background: "rgba(183, 121, 31, 0.13)",
+      },
+      Teaching: {
+        color: "#5B6472",
+        background: "rgba(91, 100, 114, 0.12)",
+      },
+    };
+
+    function setActiveCard(card) {
+      const category = card.getAttribute("data-category");
+      const style = styles[category];
+
+      cards.forEach((item) => {
+        item.classList.remove("ring-2", "ring-offset-2", "ring-offset-[#f7f4ee]");
+        item.style.borderColor = "";
+      });
+
+      card.classList.add("ring-2", "ring-offset-2", "ring-offset-[#f7f4ee]");
+      card.style.borderColor = style.color;
+      card.style.setProperty("--tw-ring-color", style.color);
+
+      panel.style.borderColor = style.color;
+
+      panelCategory.textContent = category;
+      panelCategory.style.background = style.background;
+      panelCategory.style.color = style.color;
+
+      panelTitle.textContent = card.getAttribute("data-title");
+      panelInstitution.textContent = card.getAttribute("data-institution");
+      panelPeriod.textContent = card.getAttribute("data-period");
+      panelLocation.textContent = card.getAttribute("data-location");
+      panelDescription.textContent = card.getAttribute("data-description");
+
+      const highlights = JSON.parse(card.getAttribute("data-highlights") || "[]");
+
+      panelHighlights.innerHTML = highlights
+        .map(
+          (highlight) =>
+            `<div class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm font-medium leading-6 text-[var(--muted)]">${highlight}</div>`
+        )
+        .join("");
+    }
+
+    function setFilter(category) {
+      filters.forEach((filter) => {
+        const isActive = filter.getAttribute("data-filter") === category;
+
+        filter.classList.toggle("border-[var(--blue)]", isActive);
+        filter.classList.toggle("bg-[var(--blue)]", isActive);
+        filter.classList.toggle("text-white", isActive);
+
+        filter.classList.toggle("border-[var(--border)]", !isActive);
+        filter.classList.toggle("bg-white/65", !isActive);
+        filter.classList.toggle("text-[var(--muted)]", !isActive);
+      });
+
+      let firstVisible = null;
+
+      cards.forEach((card) => {
+        const isVisible =
+          category === "All" || card.getAttribute("data-category") === category;
+
+        card.classList.toggle("hidden", !isVisible);
+
+        if (isVisible && !firstVisible) {
+          firstVisible = card;
+        }
+      });
+
+      if (firstVisible) {
+        setActiveCard(firstVisible);
+      }
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener("click", () => setActiveCard(card));
+    });
+
+    filters.forEach((filter) => {
+      filter.addEventListener("click", () => {
+        setFilter(filter.getAttribute("data-filter"));
+      });
+    });
+
+    if (cards.length > 0) {
+      setActiveCard(cards[cards.length - 1]);
+    }
+  }
+</script>

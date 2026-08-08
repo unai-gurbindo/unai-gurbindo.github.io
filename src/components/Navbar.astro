@@ -1,0 +1,22 @@
+---
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Writing", href: "/writing" },
+  { label: "Beyond Research", href: "/beyond-research" },
+  { label: "Contact", href: "/#contact" },
+];
+---
+
+<header class="site-header">
+  <nav class="container-page site-nav" aria-label="Primary navigation">
+    <a href="/" class="site-brand" aria-label="Unai Gurbindo Gonzalez home">
+      <span class="site-brand-name">Unai Gurbindo Gonzalez</span>
+      <span class="site-brand-subtitle">Trustworthy AI · Uncertainty · Robustness</span>
+    </a>
+
+    <div class="site-links">
+      {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/cv.pdf" class="academic-button">Download CV</a>
+    </div>
+  </nav>
+</header>

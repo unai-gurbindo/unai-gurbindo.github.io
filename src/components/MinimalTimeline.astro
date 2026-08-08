@@ -1,0 +1,452 @@
+---
+import {
+  minimalTimelineCategories,
+  timelineEvents,
+  timelinePeriods,
+  timelineScale,
+  timelineTracks,
+} from "../data/minimalJourney";
+
+const categoryStyles = {
+  Education: {
+    color: "#0F3D5E",
+    bg: "rgba(15, 61, 94, 0.08)",
+    border: "rgba(15, 61, 94, 0.28)",
+  },
+  Research: {
+    color: "#2A9D8F",
+    bg: "rgba(42, 157, 143, 0.08)",
+    border: "rgba(42, 157, 143, 0.30)",
+  },
+  Publication: {
+    color: "#7C6AB0",
+    bg: "rgba(142, 124, 195, 0.10)",
+    border: "rgba(142, 124, 195, 0.34)",
+  },
+  Award: {
+    color: "#A66A12",
+    bg: "rgba(183, 121, 31, 0.10)",
+    border: "rgba(183, 121, 31, 0.34)",
+  },
+  Teaching: {
+    color: "#5B6472",
+    bg: "rgba(91, 100, 114, 0.09)",
+    border: "rgba(91, 100, 114, 0.30)",
+  },
+};
+
+const trackY = {
+  research: 118,
+  education: 216,
+};
+
+const eventOffsets = {
+  research: {
+    1: -48,
+    2: -76,
+  },
+  education: {
+    1: 52,
+    2: 78,
+  },
+};
+
+const initialItem =
+  timelinePeriods.find((item) => item.id === "phd-education-period") ??
+  timelinePeriods[0];
+
+const initialStyle =
+  categoryStyles[initialItem.category as keyof typeof categoryStyles];
+---
+
+<section
+  class="mt-12 rounded-[2rem] border border-[var(--border)] bg-white/45 p-6 md:p-8"
+  data-minimal-timeline
+>
+  <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--blue)]">
+        Academic and research trajectory
+      </p>
+      <h3 class="mt-3 text-3xl font-semibold tracking-tight text-[var(--text)] md:text-4xl">
+        Two-track view of education, research roles and selected outputs
+      </h3>
+    </div>
+
+    <p class="max-w-sm text-sm leading-6 text-[var(--muted)]">
+      Periods are embedded in the tracks; individual milestones are compact clickable labels.
+    </p>
+  </div>
+
+  <div class="mb-8 flex flex-wrap gap-2">
+    {
+      minimalTimelineCategories.map((category) => (
+        <button
+          type="button"
+          data-filter={category.value}
+          class:list={[
+            "timeline-filter rounded-full border px-4 py-2 text-sm font-semibold transition",
+            category.value === "All"
+              ? "border-[var(--blue)] bg-[var(--blue)] text-white"
+              : "border-[var(--border)] bg-white/70 text-[var(--muted)] hover:border-[var(--blue)] hover:text-[var(--blue)]",
+          ]}
+        >
+          {category.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="relative h-[330px] w-full overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[#fffaf3]/60 px-6 py-6">
+    <div class="absolute left-6 top-[96px] w-[92px]">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+        Research
+      </p>
+      <p class="mt-1 text-[11px] font-medium text-[var(--muted)]">
+        roles & outputs
+      </p>
+    </div>
+
+    <div class="absolute left-6 top-[194px] w-[92px]">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+        Education
+      </p>
+      <p class="mt-1 text-[11px] font-medium text-[var(--muted)]">
+        degrees & funding
+      </p>
+    </div>
+
+    <div class="absolute left-[126px] right-8 top-0 h-full" data-timeline-track-area>
+      {
+        timelineTracks.map((track) => (
+          <div
+            class="absolute left-0 right-0 h-px bg-[var(--border)]"
+            style={`top: ${trackY[track.id as keyof typeof trackY]}px;`}
+          ></div>
+        ))
+      }
+
+      {
+        timelinePeriods.map((period) => {
+          const y = trackY[period.track as keyof typeof trackY];
+          const isMultiline = period.labelLines.length > 1;
+          const periodHeight = isMultiline ? 34 : 22;
+
+          return (
+            <button
+              type="button"
+              data-timeline-entry
+              data-kind="period"
+              data-category={period.category}
+              data-track={period.track}
+              data-title={period.title}
+              data-date={period.dateLabel}
+              data-label={period.labelLines.join(" · ")}
+              data-institution={period.institution}
+              data-location={period.location}
+              data-description={period.description}
+              data-highlights={JSON.stringify(period.highlights)}
+              class="absolute rounded-full transition hover:brightness-95"
+              style={`left: ${period.start}%; width: ${period.end - period.start}%; top: ${
+                y - periodHeight / 2
+              }px; height: ${periodHeight}px; background: ${period.background};`}
+            >
+              <span
+                class="timeline-active-target absolute inset-y-0 left-0 right-0 rounded-full border"
+                style={`border-color: transparent;`}
+              ></span>
+
+              <span
+                class:list={[
+                  "absolute left-1/2 top-1/2 flex max-w-[94%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-hidden text-center font-semibold leading-[1.05]",
+                  isMultiline ? "text-[10.5px]" : "text-[11px]",
+                ]}
+                style={`color: ${period.color};`}
+              >
+                {
+                  period.labelLines.map((line) => (
+                    <span class="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                      {line}
+                    </span>
+                  ))
+                }
+              </span>
+            </button>
+          );
+        })
+      }
+
+      {
+        timelineEvents.map((item) => {
+          const style =
+            categoryStyles[item.category as keyof typeof categoryStyles];
+
+          const y = trackY[item.track as keyof typeof trackY];
+          const offset =
+            eventOffsets[item.track as keyof typeof eventOffsets][
+              item.lane as keyof (typeof eventOffsets)["research"]
+            ];
+
+          const labelHeight = 24;
+          const labelTop = y + offset;
+          const connectorTop = offset < 0 ? labelTop + labelHeight : y;
+          const connectorHeight =
+            offset < 0 ? y - (labelTop + labelHeight) : labelTop - y;
+
+          return (
+            <button
+              type="button"
+              data-timeline-entry
+              data-kind="event"
+              data-category={item.category}
+              data-track={item.track}
+              data-title={item.title}
+              data-date={item.dateLabel}
+              data-label={item.label}
+              data-institution={item.institution}
+              data-location={item.location}
+              data-description={item.description}
+              data-highlights={JSON.stringify(item.highlights)}
+              class="absolute"
+              style={`left: ${item.x}%; top: ${labelTop}px; --event-color: ${style.color}; --event-bg: ${style.bg}; --event-border: ${style.border};`}
+              aria-label={item.title}
+            >
+              <span
+                class="timeline-connector pointer-events-none absolute left-1/2 w-px -translate-x-1/2"
+                style={`top: ${
+                  offset < 0 ? labelHeight : -connectorHeight
+                }px; height: ${connectorHeight}px; background: ${style.border};`}
+              ></span>
+
+              <span
+                data-base-border={style.border}
+                class="timeline-active-target relative z-20 flex h-[24px] min-w-[46px] -translate-x-1/2 items-center justify-center whitespace-nowrap rounded-full border px-2.5 text-[11px] font-semibold leading-none transition hover:brightness-95"
+                style={`color: ${style.color}; background: ${style.bg}; border-color: ${style.border};`}
+              >
+                {item.label}
+              </span>
+            </button>
+          );
+        })
+      }
+
+      <div class="absolute bottom-8 left-0 right-0">
+        <div class="relative h-8">
+          {
+            timelineScale.map((tick) => (
+              <div
+                class="absolute top-0 -translate-x-1/2 text-center"
+                style={`left: ${tick.x}%;`}
+              >
+                <div class="mx-auto mb-1 h-2 w-px bg-[var(--border)]"></div>
+                <span class="text-xs font-medium text-[var(--muted)]">
+                  {tick.label}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mt-8 rounded-[1.75rem] border bg-white/75 p-6 transition md:p-7"
+    style={`border-color: ${initialStyle.color};`}
+    data-timeline-panel
+  >
+    <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div>
+        <span
+          class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+          style={`background: ${initialStyle.bg}; color: ${initialStyle.color};`}
+          data-panel-category
+        >
+          {initialItem.category}
+        </span>
+
+        <h3 class="mt-4 text-2xl font-semibold tracking-tight text-[var(--text)] md:text-3xl">
+          <span data-panel-title>{initialItem.title}</span>
+        </h3>
+
+        <p class="mt-2 text-sm font-semibold text-[var(--blue)]">
+          <span data-panel-institution>{initialItem.institution}</span>
+        </p>
+      </div>
+
+      <div class="text-left md:text-right">
+        <p class="text-sm font-semibold text-[var(--text)]" data-panel-date>
+          {initialItem.dateLabel}
+        </p>
+        <p class="mt-1 text-sm text-[var(--muted)]" data-panel-location>
+          {initialItem.location}
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-5 max-w-4xl text-base leading-8 text-[var(--muted)]" data-panel-description>
+      {initialItem.description}
+    </p>
+
+    <div class="mt-5 grid gap-3 md:grid-cols-3" data-panel-highlights>
+      {
+        initialItem.highlights.map((highlight) => (
+          <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm font-medium leading-6 text-[var(--muted)]">
+            {highlight}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-[var(--muted)]">
+    <span class="text-[#0F3D5E]">Education</span>
+    <span class="text-[#2A9D8F]">Research</span>
+    <span class="text-[#7C6AB0]">Publication</span>
+    <span class="text-[#A66A12]">Award / funding</span>
+    <span class="text-[#5B6472]">Teaching</span>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector("[data-minimal-timeline]");
+
+  if (root) {
+    const entries = Array.from(root.querySelectorAll("[data-timeline-entry]"));
+    const filters = Array.from(root.querySelectorAll("[data-filter]"));
+
+    const panel = root.querySelector("[data-timeline-panel]");
+    const panelCategory = root.querySelector("[data-panel-category]");
+    const panelTitle = root.querySelector("[data-panel-title]");
+    const panelInstitution = root.querySelector("[data-panel-institution]");
+    const panelDate = root.querySelector("[data-panel-date]");
+    const panelLocation = root.querySelector("[data-panel-location]");
+    const panelDescription = root.querySelector("[data-panel-description]");
+    const panelHighlights = root.querySelector("[data-panel-highlights]");
+
+    const styles = {
+      Education: {
+        color: "#0F3D5E",
+        bg: "rgba(15, 61, 94, 0.08)",
+        border: "rgba(15, 61, 94, 0.28)",
+      },
+      Research: {
+        color: "#2A9D8F",
+        bg: "rgba(42, 157, 143, 0.08)",
+        border: "rgba(42, 157, 143, 0.30)",
+      },
+      Publication: {
+        color: "#7C6AB0",
+        bg: "rgba(142, 124, 195, 0.10)",
+        border: "rgba(142, 124, 195, 0.34)",
+      },
+      Award: {
+        color: "#A66A12",
+        bg: "rgba(183, 121, 31, 0.10)",
+        border: "rgba(183, 121, 31, 0.34)",
+      },
+      Teaching: {
+        color: "#5B6472",
+        bg: "rgba(91, 100, 114, 0.09)",
+        border: "rgba(91, 100, 114, 0.30)",
+      },
+    };
+
+    function updatePanel(entry) {
+      const category = entry.getAttribute("data-category");
+      const style = styles[category];
+
+      entries.forEach((item) => {
+        const target = item.querySelector(".timeline-active-target");
+
+        target?.classList.remove("ring-1", "ring-offset-1", "ring-offset-[#fffaf3]");
+
+        if (target) {
+          target.style.setProperty("--tw-ring-color", "");
+          target.style.borderColor =
+            target.getAttribute("data-base-border") || "transparent";
+        }
+      });
+
+      const activeTarget = entry.querySelector(".timeline-active-target");
+
+      activeTarget?.classList.add("ring-1", "ring-offset-1", "ring-offset-[#fffaf3]");
+      activeTarget?.style.setProperty("--tw-ring-color", style.color);
+
+      if (activeTarget) {
+        activeTarget.style.borderColor = style.color;
+      }
+
+      panel.style.borderColor = style.color;
+
+      panelCategory.textContent = category;
+      panelCategory.style.background = style.bg;
+      panelCategory.style.color = style.color;
+
+      panelTitle.textContent = entry.getAttribute("data-title");
+      panelInstitution.textContent = entry.getAttribute("data-institution");
+      panelDate.textContent = entry.getAttribute("data-date");
+      panelLocation.textContent = entry.getAttribute("data-location");
+      panelDescription.textContent = entry.getAttribute("data-description");
+
+      const highlights = JSON.parse(entry.getAttribute("data-highlights") || "[]");
+
+      panelHighlights.innerHTML = highlights
+        .map(
+          (highlight) =>
+            `<div class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm font-medium leading-6 text-[var(--muted)]">${highlight}</div>`
+        )
+        .join("");
+    }
+
+    function updateFilter(category) {
+      filters.forEach((filter) => {
+        const active = filter.getAttribute("data-filter") === category;
+
+        filter.classList.toggle("border-[var(--blue)]", active);
+        filter.classList.toggle("bg-[var(--blue)]", active);
+        filter.classList.toggle("text-white", active);
+
+        filter.classList.toggle("border-[var(--border)]", !active);
+        filter.classList.toggle("bg-white/70", !active);
+        filter.classList.toggle("text-[var(--muted)]", !active);
+      });
+
+      let firstMatching = null;
+
+      entries.forEach((entry) => {
+        const match =
+          category === "All" || entry.getAttribute("data-category") === category;
+
+        entry.classList.toggle("opacity-20", !match);
+        entry.classList.toggle("pointer-events-none", !match);
+
+        if (match && !firstMatching) {
+          firstMatching = entry;
+        }
+      });
+
+      if (firstMatching) {
+        updatePanel(firstMatching);
+      }
+    }
+
+    entries.forEach((entry) => {
+      entry.addEventListener("click", () => updatePanel(entry));
+    });
+
+    filters.forEach((filter) => {
+      filter.addEventListener("click", () => {
+        updateFilter(filter.getAttribute("data-filter"));
+      });
+    });
+
+    const initialEntry =
+      entries.find(
+        (entry) =>
+          entry.getAttribute("data-title") === "PhD in Artificial Intelligence"
+      ) ?? entries[0];
+
+    updatePanel(initialEntry);
+  }
+</script>

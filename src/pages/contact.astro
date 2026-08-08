@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import { links } from "../data/links";
+
+const contactLinks = [
+  { label: "Email", href: links.email },
+  { label: "GitHub", href: links.github },
+  { label: "Google Scholar", href: links.googleScholar },
+  { label: "ORCID", href: links.orcid },
+  { label: "Download CV", href: links.cv },
+];
+---
+
+<BaseLayout
+  title="Contact — Unai Gurbindo Gonzalez"
+  description="Contact information and academic links for Unai Gurbindo Gonzalez."
+>
+  <section class="container-page min-h-[70vh] py-20">
+    <SectionHeader
+      eyebrow="Contact"
+      title="Get in touch"
+      description="I am open to research conversations and collaborations around uncertainty quantification, trustworthy AI, responsible AI documentation and ethical deployment."
+    />
+
+    <div class="grid gap-8 lg:grid-cols-[1fr_0.9fr]">
+      <div class="rounded-[2rem] border border-[var(--border)] bg-white/60 p-8 md:p-10">
+        <h2 class="text-2xl font-semibold text-[var(--text)]">
+          Research interests
+        </h2>
+        <p class="mt-5 text-lg leading-8 text-[var(--muted)]">
+          My current work focuses on uncertainty under distribution shift, domain uncertainty, out-of-distribution robustness, calibration, AI documentation, accountability and responsible deployment.
+        </p>
+        <p class="mt-5 text-lg leading-8 text-[var(--muted)]">
+          Feel free to reach out for academic collaborations, research discussions, seminars, reviewing-related matters or projects connecting technical uncertainty with trustworthy and ethical AI.
+        </p>
+      </div>
+
+      <div class="rounded-[2rem] border border-[var(--border)] bg-[var(--blue)] p-8 text-white md:p-10">
+        <h2 class="text-2xl font-semibold">
+          Links
+        </h2>
+
+        <div class="mt-6 flex flex-col gap-3">
+          {
+            contactLinks.map((item) => (
+              <a
+                href={item.href}
+                target={item.href.startsWith("http") ? "_blank" : undefined}
+                class="rounded-full bg-white/10 px-5 py-3 text-sm font-semibold transition hover:bg-white hover:text-[var(--blue)]"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,82 @@
+<div class="relative mx-auto aspect-square w-full max-w-[460px] overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[#fffaf3] shadow-2xl shadow-slate-900/10">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(42,157,143,0.25),transparent_28%),radial-gradient(circle_at_70%_65%,rgba(142,124,195,0.25),transparent_30%)]"></div>
+
+  <svg viewBox="0 0 460 460" class="absolute inset-0 h-full w-full">
+    <path
+      d="M40 310 C120 250, 160 330, 230 260 C300 190, 340 230, 420 150"
+      fill="none"
+      stroke="rgba(15, 61, 94, 0.34)"
+      stroke-width="2"
+    />
+    <path
+      d="M60 120 C140 190, 220 90, 300 150 C360 195, 380 250, 410 300"
+      fill="none"
+      stroke="rgba(42, 157, 143, 0.42)"
+      stroke-width="2"
+      stroke-dasharray="7 9"
+    />
+    <ellipse
+      cx="165"
+      cy="180"
+      rx="105"
+      ry="74"
+      fill="rgba(42, 157, 143, 0.10)"
+      stroke="rgba(42, 157, 143, 0.28)"
+    />
+    <ellipse
+      cx="300"
+      cy="285"
+      rx="115"
+      ry="82"
+      fill="rgba(142, 124, 195, 0.11)"
+      stroke="rgba(142, 124, 195, 0.28)"
+      transform="rotate(-18 300 285)"
+    />
+
+    {
+      Array.from({ length: 48 }).map((_, index) => {
+        const clusterA = index < 24;
+        const x = clusterA
+          ? 85 + ((index * 37) % 145)
+          : 245 + ((index * 41) % 135);
+        const y = clusterA
+          ? 120 + ((index * 53) % 120)
+          : 220 + ((index * 47) % 130);
+
+        return (
+          <circle
+            cx={x}
+            cy={y}
+            r={clusterA ? 3.2 : 3.6}
+            fill={clusterA ? "rgba(42, 157, 143, 0.72)" : "rgba(15, 61, 94, 0.72)"}
+          />
+        );
+      })
+    }
+
+    {
+      Array.from({ length: 15 }).map((_, index) => {
+        const x = 135 + ((index * 59) % 210);
+        const y = 70 + ((index * 83) % 310);
+
+        return (
+          <circle
+            cx={x}
+            cy={y}
+            r="2.4"
+            fill="rgba(142, 124, 195, 0.65)"
+          />
+        );
+      })
+    }
+  </svg>
+
+  <div class="absolute bottom-6 left-6 right-6 rounded-2xl border border-white/70 bg-white/70 p-4 backdrop-blur-md">
+    <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--blue)]">
+      Uncertainty under shift
+    </p>
+    <p class="mt-2 text-sm leading-6 text-[var(--muted)]">
+      A visual metaphor for domains, transitions and uncertainty landscapes.
+    </p>
+  </div>
+</div>

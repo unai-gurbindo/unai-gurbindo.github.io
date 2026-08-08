@@ -1,0 +1,212 @@
+---
+import { aboutStages } from "../data/aboutJourney";
+---
+
+<div id="trajectory" class="trajectory-block">
+  <div class="trajectory-header">
+    <p class="eyebrow">Academic trajectory</p>
+  </div>
+
+  <div class="timeline-list">
+    {aboutStages.map((stage) => (
+      <details class="timeline-stage" data-stage={stage.id}>
+        <summary>
+          <span class="stage-number">{stage.number}</span>
+          <span class="stage-main">
+            <span class="stage-title-row">
+              <span class="stage-title">{stage.title}</span>
+              <span class="stage-period">{stage.period}</span>
+            </span>
+            <span class="stage-institution">{stage.institution}</span>
+            <span class="stage-description">{stage.description}</span>
+          </span>
+          <span class="details-label" aria-hidden="true">Details</span>
+        </summary>
+
+        <div class="stage-details" aria-label={`${stage.title} details`}>
+          {stage.items.map((item) => (
+            <article class="timeline-detail-item">
+              <p class="timeline-detail-heading">
+                <span class="timeline-detail-label">{item.type}</span>
+                <span class="timeline-detail-separator">—</span>
+                <strong>{item.title}</strong>
+                {item.subtitle && <span>, {item.subtitle}</span>}
+                <span class="timeline-detail-meta">. {item.period}.</span>
+              </p>
+              <p class="timeline-detail-description text-measure">{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </details>
+    ))}
+  </div>
+</div>
+
+<style>
+  .trajectory-block {
+    margin-top: 1.35rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .trajectory-header {
+    padding-bottom: 0.42rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .trajectory-header .eyebrow { margin-bottom: 0; }
+
+  .timeline-list {
+    position: relative;
+    margin-top: 0.05rem;
+  }
+
+  .timeline-list::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0.95rem;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .timeline-stage {
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-stage summary {
+    display: grid;
+    grid-template-columns: 2.05rem minmax(0, 1fr) auto;
+    gap: 0.78rem;
+    align-items: start;
+    padding: 0.68rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .timeline-stage summary::-webkit-details-marker { display: none; }
+
+  .stage-number {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.78rem;
+    height: 1.78rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .stage-main {
+    display: block;
+    min-width: 0;
+  }
+
+  .stage-title-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08rem;
+  }
+
+  @media (min-width: 760px) {
+    .stage-title-row {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1.2rem;
+    }
+  }
+
+  .stage-title {
+    color: var(--text);
+    font-size: 0.76rem;
+    font-weight: 660;
+    letter-spacing: -0.002em;
+  }
+
+  .stage-period {
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .stage-institution,
+  .stage-description {
+    display: block;
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.43;
+  }
+
+  .stage-institution { margin-top: 0.08rem; }
+  .stage-description { margin-top: 0.16rem; }
+
+  .details-label {
+    color: var(--navy);
+    font-size: 0.69rem;
+    font-weight: 650;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(11, 47, 73, 0.26);
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  .timeline-stage[open] .details-label::after { content: " −"; }
+  .timeline-stage:not([open]) .details-label::after { content: " +"; }
+
+  .stage-details {
+    margin: 0 0 0 2.82rem;
+    padding: 0 0 0.45rem;
+  }
+
+  .timeline-detail-item {
+    padding: 0.34rem 0 !important;
+    border-top: 1px solid var(--border);
+  }
+
+  .timeline-detail-item p { margin: 0 !important; }
+
+  .timeline-detail-heading {
+    color: var(--text);
+    font-size: 11.2px !important;
+    line-height: 1.42 !important;
+  }
+
+  .timeline-detail-heading strong { font-weight: 670; }
+
+  .timeline-detail-label {
+    color: var(--navy);
+    font-weight: 700;
+  }
+
+  .timeline-detail-separator {
+    color: var(--muted-light);
+    margin: 0 0.18rem;
+  }
+
+  .timeline-detail-meta { color: var(--muted); }
+
+  .timeline-detail-description {
+    margin-top: 0.12rem !important;
+    color: var(--muted);
+    font-size: 10.8px !important;
+    line-height: 1.42 !important;
+    max-width: 760px;
+  }
+
+  @media (max-width: 700px) {
+    .timeline-stage summary { grid-template-columns: 2.05rem minmax(0, 1fr); }
+    .details-label { grid-column: 2; }
+    .stage-details { margin-left: 2.82rem; }
+  }
+</style>

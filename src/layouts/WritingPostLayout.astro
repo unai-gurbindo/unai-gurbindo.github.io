@@ -1,0 +1,58 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  type: string;
+  pubDate: Date;
+}
+
+const { title, description, category, type, pubDate } = Astro.props;
+
+const formattedDate = new Intl.DateTimeFormat("en", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}).format(pubDate);
+---
+
+<BaseLayout title={`${title} — Unai Gurbindo Gonzalez`} description={description}>
+  <article class="container-page py-20">
+    <a
+      href="/writing"
+      class="inline-flex rounded-full border border-[var(--border)] bg-white/60 px-4 py-2 text-sm font-semibold text-[var(--blue)] transition hover:border-[var(--blue)]"
+    >
+      ← Back to writing
+    </a>
+
+    <header class="mt-10 max-w-4xl">
+      <div class="flex flex-wrap gap-2">
+        <span class="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold text-[var(--blue)]">
+          {category}
+        </span>
+        <span class="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold text-[var(--muted)]">
+          {type}
+        </span>
+        <span class="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold text-[var(--muted)]">
+          {formattedDate}
+        </span>
+      </div>
+
+      <h1 class="mt-6 text-5xl font-semibold tracking-tight text-[var(--text)] text-balance md:text-6xl">
+        {title}
+      </h1>
+
+      <p class="mt-6 text-xl leading-8 text-[var(--muted)]">
+        {description}
+      </p>
+    </header>
+
+    <div class="mt-12 rounded-[2rem] border border-[var(--border)] bg-white/70 p-7 md:p-10">
+      <div class="prose-writing">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
