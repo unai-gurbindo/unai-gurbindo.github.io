@@ -4,5 +4,5 @@ export const links = {
   googleScholar: "https://scholar.google.com/citations?hl=es&user=3Cz7GXcAAAAJ",
   orcid: "https://orcid.org/0000-0002-4091-5809",
   linkedin: "",
-  cv: "/cv/unai-gurbindo-gonzalez-cv.pdf",
+  cv: "/cv.pdf",
 };

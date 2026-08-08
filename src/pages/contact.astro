@@ -14,13 +14,14 @@ const contactLinks = [
 
 <BaseLayout
   title="Contact — Unai Gurbindo Gonzalez"
-  description="Contact information and academic links for Unai Gurbindo Gonzalez."
+  description="Contact Unai Gurbindo Gonzalez about trustworthy AI, data science, biomedical analytics, robust computer vision and research collaborations."
 >
   <section class="container-page min-h-[70vh] py-20">
     <SectionHeader
       eyebrow="Contact"
       title="Get in touch"
-      description="I am open to research conversations and collaborations around uncertainty quantification, trustworthy AI, responsible AI documentation and ethical deployment."
+      headingLevel="h1"
+      description="I am open to research conversations and collaborations across uncertainty quantification, data science, biomedical analytics, trustworthy AI and responsible deployment."
     />
 
     <div class="grid gap-8 lg:grid-cols-[1fr_0.9fr]">
@@ -32,7 +33,7 @@ const contactLinks = [
           My current work focuses on uncertainty under distribution shift, domain uncertainty, out-of-distribution robustness, calibration, AI documentation, accountability and responsible deployment.
         </p>
         <p class="mt-5 text-lg leading-8 text-[var(--muted)]">
-          Feel free to reach out for academic collaborations, research discussions, seminars, reviewing-related matters or projects connecting technical uncertainty with trustworthy and ethical AI.
+          Feel free to reach out for research collaborations, applied AI and data science projects, seminars, reviewing-related matters or work connecting technical uncertainty with trustworthy and ethical AI.
         </p>
       </div>
 
@@ -47,6 +48,7 @@ const contactLinks = [
               <a
                 href={item.href}
                 target={item.href.startsWith("http") ? "_blank" : undefined}
+                rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                 class="rounded-full bg-white/10 px-5 py-3 text-sm font-semibold transition hover:bg-white hover:text-[var(--blue)]"
               >
                 {item.label}

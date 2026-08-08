@@ -8,7 +8,7 @@ export const publications = [
     authors: "Gurbindo Gonzalez, U.*, Aldoma, A.*, and Brando, A.",
     note: "*Equal contribution.",
     links: [
-      { label: "Code", href: "https://github.com/anonymous-position-paper/Position-Joint-Distribution-UQ" },
+      { label: "Code", href: "https://github.com/unai-gurbindo/Position-Joint-Distribution-UQ" },
     ],
   },
   {

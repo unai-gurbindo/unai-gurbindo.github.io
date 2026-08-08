@@ -3,14 +3,16 @@ interface Props {
   eyebrow?: string;
   title: string;
   description?: string;
+  headingLevel?: "h1" | "h2";
 }
 
-const { eyebrow, title, description } = Astro.props;
+const { eyebrow, title, description, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
 ---
 
 <header class="section-header">
   {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-  <h2>{title}</h2>
+  <Heading>{title}</Heading>
   {description && <p class="text-measure">{description}</p>}
 </header>
 
@@ -20,7 +22,7 @@ const { eyebrow, title, description } = Astro.props;
     max-width: 780px;
   }
 
-  .section-header h2 {
+  .section-header :is(h1, h2) {
     margin: 0;
     color: var(--text);
     font-size: clamp(1.06rem, 1.16vw, 1.28rem);
@@ -32,7 +34,7 @@ const { eyebrow, title, description } = Astro.props;
   .section-header > p:not(.eyebrow) {
     margin: 6px 0 0;
     color: var(--muted);
-    font-size: 12.15px;
+    font-size: 13.8px;
     line-height: 1.55;
   }
 </style>

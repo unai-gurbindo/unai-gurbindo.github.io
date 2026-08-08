@@ -6,12 +6,53 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  ogType?: "website" | "article";
 }
 
 const {
-  title = "Unai Gurbindo Gonzalez",
-  description = "Academic profile of Unai Gurbindo Gonzalez, PhD researcher in trustworthy AI, uncertainty quantification and robustness under distribution shift.",
+  title = "Unai Gurbindo Gonzalez — Data Scientist & Trustworthy AI Researcher",
+  description = "Portfolio of Unai Gurbindo Gonzalez, Data Scientist and PhD Researcher working across trustworthy AI, uncertainty quantification, biomedical data analysis and robust computer vision.",
+  image = "/og-card.png",
+  ogType = "website",
 } = Astro.props;
+
+const siteOrigin = Astro.site ?? Astro.url.origin;
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin);
+const socialImageUrl = new URL(image, siteOrigin);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Unai Gurbindo Gonzalez",
+  url: new URL("/", siteOrigin).toString(),
+  jobTitle: "Data Scientist and PhD Researcher in Trustworthy AI",
+  affiliation: [
+    {
+      "@type": "Organization",
+      name: "Barcelona Supercomputing Center",
+      url: "https://www.bsc.es/",
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      name: "Universitat Politècnica de Catalunya",
+      url: "https://www.upc.edu/",
+    },
+  ],
+  sameAs: [
+    "https://github.com/unai-gurbindo",
+    "https://scholar.google.com/citations?hl=es&user=3Cz7GXcAAAAJ",
+    "https://orcid.org/0000-0002-4091-5809",
+  ],
+  knowsAbout: [
+    "Data Science",
+    "Trustworthy Artificial Intelligence",
+    "Uncertainty Quantification",
+    "Biomedical Data Analysis",
+    "Computer Vision",
+    "Out-of-Distribution Detection",
+  ],
+};
 ---
 
 <!doctype html>
@@ -19,13 +60,38 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    <meta name="author" content="Unai Gurbindo Gonzalez" />
+    <meta name="robots" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b2f49" />
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" sizes="32x32" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Unai Gurbindo Gonzalez" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Unai Gurbindo Gonzalez — Data Scientist and PhD Researcher in Trustworthy AI" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+
     <title>{title}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="page-shell">
       <Navbar />
-      <main>
+      <main id="main-content" tabindex="-1">
         <slot />
       </main>
       <Footer />

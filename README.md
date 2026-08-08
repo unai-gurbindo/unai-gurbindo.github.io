@@ -1,43 +1,42 @@
-# Astro Starter Kit: Minimal
+# Unai Gurbindo Gonzalez — personal website
+
+Personal portfolio built with Astro and deployed to GitHub Pages.
+
+## Local development
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
+npm run build
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Beyond Research photographs
 
-## 🚀 Project Structure
+Photographs are organised by event under `public/images/beyond-research/`.
+The page publishes only files that exist, so missing photographs never produce
+broken images or external placeholders.
 
-Inside of your Astro project, you'll see the following folders and files:
+Upload the Seoul photographs to:
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+public/images/beyond-research/seoul-icml-2026/
+├── seoul-icml-2026-01.jpg
+├── seoul-icml-2026-02.jpg
+├── seoul-icml-2026-03.jpg
+├── seoul-icml-2026-04.jpg
+└── seoul-icml-2026-05.jpg
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Upload the Rome photographs to:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```text
+public/images/beyond-research/rome-ijcnn-2025/
+├── rome-ijcnn-2025-01.jpg
+├── rome-ijcnn-2025-02.jpg
+├── rome-ijcnn-2025-03.jpg
+├── rome-ijcnn-2025-04.jpg
+└── rome-ijcnn-2025-05.jpg
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Use lowercase names exactly as shown. JPEG files with a 4:3 landscape crop work
+best in the gallery; the full image remains visible in the lightbox.
