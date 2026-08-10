@@ -13,6 +13,7 @@ const journalEntries = [
     title: "Presenting our ICML position paper in Seoul",
     description:
       "A few fragments from Seoul, where I presented our ICML 2026 position paper. The conference brought together the technical work behind the paper, conversations with researchers and the experience of sharing an idea that had gradually taken shape over many months.",
+    orientation: "landscape",
     images: createImageSet("seoul-icml-2026", "ICML 2026 in Seoul"),
   },
   {
@@ -20,17 +21,16 @@ const journalEntries = [
     title: "Presenting the IJCNN paper in Rome",
     description:
       "A few fragments from Rome, where I presented my IJCNN paper in person. It was one of those moments where the technical work, the travel, the conversations and the sense of becoming part of a research community came together.",
+    orientation: "portrait",
     images: createImageSet("rome-ijcnn-2025", "IJCNN 2025 in Rome"),
   },
 ];
 
-const lightboxImages = journalEntries.flatMap((entry) =>
-  entry.images.map((image) => ({
-    ...image,
-    entryTitle: entry.title,
-    date: entry.date,
-  })),
-);
+const lightboxGroups = journalEntries.map((entry) => ({
+  title: entry.title,
+  date: entry.date,
+  images: entry.images,
+}));
 ---
 
 <BaseLayout
@@ -63,34 +63,35 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     </header>
 
     <section class="journal-list" aria-label="Personal diary entries">
-      {journalEntries.map((entry) => (
+      {journalEntries.map((entry, entryIndex) => (
         <article class="journal-entry">
           <div class="journal-date">{entry.date}</div>
           <div class="journal-content">
             <h2>{entry.title}</h2>
             <p>{entry.description}</p>
 
-            <div class="photo-strip" aria-label={`${entry.title} image carousel`}>
-              {entry.images.map((image, entryImageIndex) => {
-                const globalIndex = lightboxImages.findIndex((item) => item.src === image.src);
-                return (
-                  <button
-                    class="photo-item"
-                    type="button"
-                    data-lightbox-index={globalIndex}
-                    aria-label={`Open photograph ${entryImageIndex + 1} of ${entry.images.length} from ${entry.title}`}
-                  >
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      loading="lazy"
-                      width="680"
-                      height="510"
-                      decoding="async"
-                    />
-                  </button>
-                );
-              })}
+            <div
+              class:list={["photo-strip", { "photo-strip--portrait": entry.orientation === "portrait" }]}
+              aria-label={`${entry.title} image carousel`}
+            >
+              {entry.images.map((image, entryImageIndex) => (
+                <button
+                  class="photo-item"
+                  type="button"
+                  data-lightbox-group={entryIndex}
+                  data-lightbox-index={entryImageIndex}
+                  aria-label={`Open photograph ${entryImageIndex + 1} of ${entry.images.length} from ${entry.title}`}
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading="lazy"
+                    width="680"
+                    height="510"
+                    decoding="async"
+                  />
+                </button>
+              ))}
             </div>
           </div>
         </article>
@@ -118,7 +119,7 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     <button class="lightbox-arrow lightbox-arrow-next" type="button" data-lightbox-next aria-label="Next image">›</button>
   </div>
 
-  <script define:vars={{ lightboxImages }}>
+  <script define:vars={{ lightboxGroups }}>
     const lightbox = document.querySelector("[data-lightbox]");
     const imageEl = document.querySelector("[data-lightbox-image]");
     const titleEl = document.querySelector("[data-lightbox-title]");
@@ -126,29 +127,40 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     const closeButton = document.querySelector("[data-lightbox-close]");
     const prevButton = document.querySelector("[data-lightbox-prev]");
     const nextButton = document.querySelector("[data-lightbox-next]");
-    const triggers = Array.from(document.querySelectorAll("[data-lightbox-index]"));
+    const triggers = Array.from(
+      document.querySelectorAll("[data-lightbox-group][data-lightbox-index]")
+    );
 
+    let activeGroupIndex = 0;
     let activeIndex = 0;
     let previousFocus = null;
 
-    function updateLightbox(index) {
-      if (!lightboxImages.length) return;
+    function getActiveGroup() {
+      return lightboxGroups[activeGroupIndex];
+    }
 
-      activeIndex = Math.max(0, Math.min(index, lightboxImages.length - 1));
-      const activeImage = lightboxImages[activeIndex];
+    function updateLightbox(index) {
+      const activeGroup = getActiveGroup();
+      if (!activeGroup || !activeGroup.images.length) return;
+
+      activeIndex = Math.max(0, Math.min(index, activeGroup.images.length - 1));
+      const activeImage = activeGroup.images[activeIndex];
 
       imageEl.src = activeImage.src;
       imageEl.alt = activeImage.alt;
-      titleEl.textContent = `${activeImage.entryTitle} · ${activeImage.date}`;
-      counterEl.textContent = `${activeIndex + 1} / ${lightboxImages.length}`;
+      titleEl.textContent = `${activeGroup.title} · ${activeGroup.date}`;
+      counterEl.textContent = `${activeIndex + 1} / ${activeGroup.images.length}`;
 
       prevButton.disabled = activeIndex === 0;
-      nextButton.disabled = activeIndex === lightboxImages.length - 1;
+      nextButton.disabled = activeIndex === activeGroup.images.length - 1;
     }
 
-    function openLightbox(index) {
+    function openLightbox(groupIndex, imageIndex) {
+      if (!lightboxGroups.length) return;
+
       previousFocus = document.activeElement;
-      updateLightbox(index);
+      activeGroupIndex = Math.max(0, Math.min(groupIndex, lightboxGroups.length - 1));
+      updateLightbox(imageIndex);
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.documentElement.classList.add("lightbox-lock");
@@ -165,7 +177,10 @@ const lightboxImages = journalEntries.flatMap((entry) =>
 
     triggers.forEach((trigger) => {
       trigger.addEventListener("click", () => {
-        openLightbox(Number(trigger.dataset.lightboxIndex || 0));
+        openLightbox(
+          Number(trigger.dataset.lightboxGroup || 0),
+          Number(trigger.dataset.lightboxIndex || 0)
+        );
       });
     });
 
@@ -176,7 +191,10 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     });
 
     nextButton.addEventListener("click", () => {
-      if (activeIndex < lightboxImages.length - 1) updateLightbox(activeIndex + 1);
+      const activeGroup = getActiveGroup();
+      if (activeGroup && activeIndex < activeGroup.images.length - 1) {
+        updateLightbox(activeIndex + 1);
+      }
     });
 
     lightbox.addEventListener("click", (event) => {
@@ -186,9 +204,14 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     window.addEventListener("keydown", (event) => {
       if (!lightbox.classList.contains("is-open")) return;
 
+      const activeGroup = getActiveGroup();
+      if (!activeGroup) return;
+
       if (event.key === "Escape") closeLightbox();
       if (event.key === "ArrowLeft" && activeIndex > 0) updateLightbox(activeIndex - 1);
-      if (event.key === "ArrowRight" && activeIndex < lightboxImages.length - 1) updateLightbox(activeIndex + 1);
+      if (event.key === "ArrowRight" && activeIndex < activeGroup.images.length - 1) {
+        updateLightbox(activeIndex + 1);
+      }
     });
   </script>
 </BaseLayout>
@@ -292,6 +315,10 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     padding-bottom: 8px;
   }
 
+  .photo-strip--portrait {
+    align-items: flex-start;
+  }
+
   .photo-strip::-webkit-scrollbar {
     height: 7px;
   }
@@ -324,6 +351,16 @@ const lightboxImages = journalEntries.flatMap((entry) =>
     border-radius: 0;
     filter: saturate(0.92) contrast(0.98);
     transition: opacity 160ms ease, transform 160ms ease;
+  }
+
+  .photo-strip--portrait .photo-item,
+  .photo-strip--portrait .photo-item img {
+    width: 190px;
+  }
+
+  .photo-strip--portrait .photo-item img {
+    height: auto;
+    object-fit: contain;
   }
 
   .photo-item:hover img,
@@ -472,6 +509,15 @@ const lightboxImages = journalEntries.flatMap((entry) =>
 
     .photo-item img {
       height: 150px;
+    }
+
+    .photo-strip--portrait .photo-item,
+    .photo-strip--portrait .photo-item img {
+      width: 165px;
+    }
+
+    .photo-strip--portrait .photo-item img {
+      height: auto;
     }
 
     .lightbox {
