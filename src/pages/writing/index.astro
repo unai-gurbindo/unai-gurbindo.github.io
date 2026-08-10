@@ -1,423 +1,67 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-
-const writingSections = [
-  {
-    key: "research-notes",
-    number: "01",
-    title: "Research notes",
-    description:
-      "Technical notes, conceptual clarifications and working ideas around uncertainty quantification, robustness and deployment evaluation.",
-    match: ["research note", "research notes", "note", "notes", "technical note", "apunte", "apuntes"],
-  },
-  {
-    key: "essays-opinion",
-    number: "02",
-    title: "Essays and opinion",
-    description:
-      "Longer reflections on AI ethics, governance, epistemic responsibility, documentation and the social meaning of trustworthy AI.",
-    match: ["essay", "essays", "opinion", "opinion essay", "article", "articulo", "artículo"],
-  },
-  {
-    key: "talks-presentations",
-    number: "03",
-    title: "Talks and presentations",
-    description:
-      "Slides, talks, teaching material and presentation notes from academic, outreach and applied AI settings.",
-    match: ["talk", "talks", "presentation", "presentations", "slides", "lecture", "teaching"],
-  },
-];
-
-const filters = [
-  { label: "All", value: "all" },
-  { label: "Generative models", value: "generative-models" },
-  { label: "AI ethics", value: "ai-ethics" },
-  { label: "Uncertainty quantification", value: "uncertainty-quantification" },
-  { label: "Domain uncertainty", value: "domain-uncertainty" },
-];
-
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat("en", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(date);
-
-const allPosts = await getCollection("writing", ({ data }) => data.draft !== true);
-
-const sortedPosts = allPosts.sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-
-const enrichedPosts = sortedPosts.map((post) => {
-  const data = post.data as any;
-  const rawTags = Array.isArray(data.tags) ? data.tags : [];
-  const tagLabels = [...new Set([data.category, data.type, ...rawTags].filter(Boolean))];
-  const tagSlugs = tagLabels.map((tag) => slugify(String(tag)));
-  const typeSlug = slugify(String(data.type ?? ""));
-
-  return {
-    post,
-    tagLabels,
-    tagSlugs,
-    sectionKey:
-      writingSections.find((section) =>
-        section.match.some((candidate) => typeSlug === slugify(candidate) || typeSlug.includes(slugify(candidate)))
-      )?.key ?? "research-notes",
-  };
-});
-
-const postsBySection = writingSections
-  .map((section) => ({
-    ...section,
-    posts: enrichedPosts.filter((item) => item.sectionKey === section.key),
-  }))
-  .filter((section) => section.posts.length > 0);
 ---
 
 <BaseLayout
-  title="Writing — Unai Gurbindo Gonzalez"
-  description="Writing by Unai Gurbindo Gonzalez on uncertainty quantification, domain uncertainty, generative models and AI ethics."
+  title="Writing — Coming soon | Unai Gurbindo Gonzalez"
+  description="Essays, research notes and reflections by Unai Gurbindo Gonzalez. Coming soon."
 >
-  <section class="writing-page container-page">
-    <header class="writing-header">
+  <section class="writing-coming-soon container-page">
+    <div class="coming-soon-copy">
       <p class="eyebrow">Writing</p>
       <h1>Essays and research notes</h1>
-      <p class="text-measure">
-        Notes and essays on uncertainty quantification, domain uncertainty,
-        generative models and responsible AI. Use the filters to browse by topic.
+      <p class="status">Coming soon.</p>
+      <p class="description">
+        I am preparing a collection of research notes, technical reflections and longer-form writing on uncertainty quantification, trustworthy AI and responsible deployment.
       </p>
-    </header>
-
-    <nav class="writing-filters" aria-label="Filter writing by topic">
-      {filters.map((filter) => (
-        <button
-          type="button"
-          class="filter-button"
-          data-filter={filter.value}
-          aria-pressed={filter.value === "all" ? "true" : "false"}
-        >
-          {filter.label}
-        </button>
-      ))}
-    </nav>
-
-    <div class="writing-groups" data-writing-groups>
-      {postsBySection.map((section) => (
-        <details class="writing-group" open data-writing-group>
-          <summary>
-            <span class="group-number">{section.number}</span>
-            <span class="group-main">
-              <span class="group-title">{section.title}</span>
-              <span class="group-description text-measure">{section.description}</span>
-            </span>
-            <span class="details-label" aria-hidden="true">Details</span>
-          </summary>
-
-          <div class="writing-items" data-writing-items>
-            {section.posts.map(({ post, tagLabels, tagSlugs }) => (
-              <article class="writing-item" data-tags={tagSlugs.join(" ")}>
-                <p class="writing-item-heading">
-                  <a href={`/writing/${post.id}`}>{post.data.title}</a>
-                  <span class="writing-meta">
-                    {post.data.type} · {formatDate(post.data.pubDate)}
-                  </span>
-                </p>
-                <p class="writing-description text-measure">{post.data.description}</p>
-                {tagLabels.length > 0 && (
-                  <p class="writing-tags">
-                    {tagLabels.map((tag, index) => (
-                      <>
-                        <span>{tag}</span>{index < tagLabels.length - 1 && <span class="tag-separator"> · </span>}
-                      </>
-                    ))}
-                  </p>
-                )}
-              </article>
-            ))}
-
-            <p class="empty-filter-message" data-empty-message hidden>
-              No writing in this group matches the selected filter yet.
-            </p>
-
-            {section.posts.length === 0 && (
-              <p class="empty-section-message">
-                No pieces in this group yet.
-              </p>
-            )}
-          </div>
-        </details>
-      ))}
     </div>
   </section>
 </BaseLayout>
 
-<script>
-  const filters = Array.from(document.querySelectorAll("[data-filter]"));
-  const groups = Array.from(document.querySelectorAll("[data-writing-group]"));
-
-  const filterAliases = {
-    "ai-ethics": ["ai-ethics", "ethics-ai", "ethics", "responsible-ai"],
-    "generative-models": ["generative-models", "generative-model", "diffusion-models", "synthetic-data"],
-    "uncertainty-quantification": ["uncertainty-quantification", "uq", "uncertainty"],
-    "domain-uncertainty": ["domain-uncertainty", "domain-shift", "ood", "out-of-distribution"],
-  };
-
-  const matchesFilter = (item, activeFilter) => {
-    if (activeFilter === "all") return true;
-    const itemTags = (item.dataset.tags || "").split(" ").filter(Boolean);
-    const acceptedTags = filterAliases[activeFilter] || [activeFilter];
-    return acceptedTags.some((tag) => itemTags.includes(tag));
-  };
-
-  const applyFilter = (activeFilter) => {
-    filters.forEach((button) => {
-      const isActive = button.dataset.filter === activeFilter;
-      button.setAttribute("aria-pressed", String(isActive));
-    });
-
-    groups.forEach((group) => {
-      const items = Array.from(group.querySelectorAll(".writing-item"));
-      const emptyMessage = group.querySelector("[data-empty-message]");
-      let visibleCount = 0;
-
-      items.forEach((item) => {
-        const isVisible = matchesFilter(item, activeFilter);
-        item.hidden = !isVisible;
-        if (isVisible) visibleCount += 1;
-      });
-
-      if (emptyMessage) {
-        emptyMessage.hidden = activeFilter === "all" || visibleCount > 0 || items.length === 0;
-      }
-    });
-  };
-
-  filters.forEach((button) => {
-    button.addEventListener("click", () => applyFilter(button.dataset.filter || "all"));
-  });
-</script>
-
 <style>
-  .writing-page {
-    padding-top: 46px;
-    padding-bottom: 54px;
-  }
-
-  .writing-header {
-    max-width: 820px;
-    margin-bottom: 20px;
-  }
-
-  .writing-header h1 {
-    margin: 0;
-    color: var(--text);
-    font-size: clamp(1.55rem, 2vw, 2rem);
-    line-height: 1.18;
-    letter-spacing: -0.02em;
-  }
-
-  .writing-header p:not(.eyebrow) {
-    margin-top: 9px;
-    color: var(--muted);
-    font-size: 0.94rem;
-    line-height: 1.58;
-  }
-
-  .writing-filters {
+  .writing-coming-soon {
+    min-height: calc(100vh - 210px);
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0 0 24px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--border);
+    align-items: center;
+    padding-top: 64px;
+    padding-bottom: 96px;
   }
 
-  .filter-button {
-    appearance: none;
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--text);
-    padding: 0.32rem 0.58rem;
-    font: inherit;
-    font-size: 0.78rem;
-    line-height: 1.2;
-    cursor: pointer;
+  .coming-soon-copy {
+    max-width: 720px;
   }
 
-  .filter-button:hover,
-  .filter-button[aria-pressed="true"] {
-    border-color: var(--navy);
-    color: var(--navy);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .writing-groups {
-    border-top: 1px solid var(--border);
-  }
-
-  .writing-group {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .writing-group summary {
-    display: grid;
-    grid-template-columns: 2.2rem minmax(0, 1fr) auto;
-    gap: 0.9rem;
-    align-items: start;
-    padding: 0.86rem 0;
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .writing-group summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .group-number {
-    color: var(--navy);
-    font-size: 0.72rem;
-    font-weight: 700;
-  }
-
-  .group-title {
-    display: block;
-    color: var(--text);
-    font-size: 0.98rem;
-    font-weight: 700;
-    line-height: 1.35;
-  }
-
-  .group-description {
-    display: block;
-    margin-top: 0.18rem;
-    color: var(--muted);
-    font-size: 0.8rem;
-    line-height: 1.48;
-  }
-
-  .details-label {
-    color: var(--navy);
-    font-size: 0.74rem;
-    font-weight: 650;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-decoration-color: rgba(11, 47, 73, 0.25);
-    text-underline-offset: 3px;
-    white-space: nowrap;
-  }
-
-  .writing-group[open] .details-label::after {
-    content: " −";
-  }
-
-  .writing-group:not([open]) .details-label::after {
-    content: " +";
-  }
-
-  .writing-items {
-    margin-left: 3.1rem;
-    padding-bottom: 0.7rem;
-  }
-
-  .writing-item {
-    padding: 0.62rem 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .writing-item[hidden] {
-    display: none;
-  }
-
-  .writing-item p {
+  .coming-soon-copy h1 {
     margin: 0;
-  }
-
-  .writing-item-heading {
     color: var(--text);
-    font-size: 0.86rem;
-    line-height: 1.45;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
   }
 
-  .writing-item-heading a {
-    color: var(--text);
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .writing-item-heading a:hover {
+  .status {
+    margin: 18px 0 0;
     color: var(--navy);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
-  .writing-meta {
-    display: inline-block;
-    margin-left: 0.3rem;
+  .description {
+    max-width: 620px;
+    margin: 13px 0 0;
     color: var(--muted);
-    font-size: 0.78rem;
-  }
-
-  .writing-description {
-    margin-top: 0.18rem !important;
-    color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.5;
-  }
-
-  .writing-tags {
-    margin-top: 0.22rem !important;
-    color: var(--muted-light);
-    font-size: 0.72rem;
-    line-height: 1.4;
-  }
-
-  .tag-separator {
-    color: var(--border-strong);
-  }
-
-  .empty-filter-message,
-  .empty-section-message {
-    margin: 0;
-    padding: 0.62rem 0;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.45;
+    font-size: 0.96rem;
+    line-height: 1.65;
   }
 
   @media (max-width: 700px) {
-    .writing-page {
-      padding-top: 34px;
-    }
-
-    .writing-group summary {
-      grid-template-columns: 2rem minmax(0, 1fr);
-    }
-
-    .details-label {
-      grid-column: 2;
-    }
-
-    .writing-items {
-      margin-left: 2.9rem;
-    }
-
-    .writing-meta {
-      display: block;
-      margin-left: 0;
-      margin-top: 0.1rem;
+    .writing-coming-soon {
+      min-height: calc(100vh - 180px);
+      align-items: flex-start;
+      padding-top: 52px;
+      padding-bottom: 72px;
     }
   }
 </style>
