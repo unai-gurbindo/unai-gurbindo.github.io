@@ -1,6 +1,4 @@
 ---
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const createImageSet = (directory: string, eventLabel: string) =>
@@ -24,12 +22,7 @@ const journalEntries = [
       "A few fragments from Rome, where I presented my IJCNN paper in person. It was one of those moments where the technical work, the travel, the conversations and the sense of becoming part of a research community came together.",
     images: createImageSet("rome-ijcnn-2025", "IJCNN 2025 in Rome"),
   },
-].map((entry) => ({
-  ...entry,
-  images: entry.images.filter((image) =>
-    existsSync(fileURLToPath(new URL(`../../public${image.src}`, import.meta.url)))
-  ),
-}));
+];
 
 const lightboxImages = journalEntries.flatMap((entry) =>
   entry.images.map((image) => ({
@@ -77,30 +70,28 @@ const lightboxImages = journalEntries.flatMap((entry) =>
             <h2>{entry.title}</h2>
             <p>{entry.description}</p>
 
-            {entry.images.length > 0 && (
-              <div class="photo-strip" aria-label={`${entry.title} image carousel`}>
-                {entry.images.map((image, entryImageIndex) => {
-                  const globalIndex = lightboxImages.findIndex((item) => item.src === image.src);
-                  return (
-                    <button
-                      class="photo-item"
-                      type="button"
-                      data-lightbox-index={globalIndex}
-                      aria-label={`Open photograph ${entryImageIndex + 1} of ${entry.images.length} from ${entry.title}`}
-                    >
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        loading="lazy"
-                        width="680"
-                        height="510"
-                        decoding="async"
-                      />
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            <div class="photo-strip" aria-label={`${entry.title} image carousel`}>
+              {entry.images.map((image, entryImageIndex) => {
+                const globalIndex = lightboxImages.findIndex((item) => item.src === image.src);
+                return (
+                  <button
+                    class="photo-item"
+                    type="button"
+                    data-lightbox-index={globalIndex}
+                    aria-label={`Open photograph ${entryImageIndex + 1} of ${entry.images.length} from ${entry.title}`}
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      loading="lazy"
+                      width="680"
+                      height="510"
+                      decoding="async"
+                    />
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </article>
       ))}
